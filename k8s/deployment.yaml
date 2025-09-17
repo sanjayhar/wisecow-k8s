@@ -2,8 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wisecow-deployment
+  labels:
+    app: wisecow
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: wisecow
@@ -13,7 +15,8 @@ spec:
         app: wisecow
     spec:
       containers:
-      - name: wisecow
-        image: sanjayhar/wisecow:latest   
-        ports:
-        - containerPort: 8080
+        - name: wisecow
+          image: sanjayharish/wisecow:latest
+          ports:
+            - containerPort: 4499
+          imagePullPolicy: Always
