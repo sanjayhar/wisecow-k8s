@@ -23,3 +23,5 @@ jobs:
       run: |
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/wisecow:latest .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/wisecow:latest
+
+875862b (Added Kubernetes manifests and CI/CD workflow)
