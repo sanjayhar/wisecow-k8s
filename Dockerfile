@@ -1,19 +1,19 @@
 FROM alpine:latest
 
-# Install required packages (if your script needs curl, cowsay, etc.)
-RUN apk add --no-cache bash curl cowsay
+# Install dependencies
+RUN apk update && apk add --no-cache bash curl perl cowsay
 
 # Set working directory
 WORKDIR /app
 
-# Copy wisecow script into the image
+# Copy app files
 COPY wisecow.sh .
 
-# Make it executable
+# Make script executable
 RUN chmod +x wisecow.sh
 
-# Expose port (change 8080 if your script uses a different one)
-EXPOSE 8080
+# Expose port used by Wisecow app
+EXPOSE 4499
 
-# Run the script when container starts
+# Run the app
 CMD ["./wisecow.sh"]
