@@ -10,30 +10,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step 2: Log in to DockerHub
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # Step 3: Build and push Docker image
       - name: Build and push Docker image
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/wisecow:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/wisecow:latest
 
-      - name: Set up kubectl
+      # Step 4: Install Kind and Kubectl
+      - name: Set up Kind
+        uses: engineerd/setup-kind@v0.5.0
+
+      - name: Install kubectl
         uses: azure/setup-kubectl@v3
         with:
-          version: 'latest'
+          version: 'v1.27.3'  # You can set your preferred version
 
-      - name: Configure Kubeconfig
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG_DATA }}" > $HOME/.kube/config
+      # Step 5: Create local Kubernetes cluster
+      - name: Create Kind cluster
+        run: kind create cluster --name wisecow
 
+      # Step 6: Deploy Wisecow app to the cluster
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f k8s/
+          kubectl rollout status deployment/wisecow-deployment
