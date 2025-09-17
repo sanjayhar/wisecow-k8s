@@ -1,19 +1,26 @@
-FROM alpine:latest
+# Use Ubuntu 20.04 base image
+FROM ubuntu:20.04
 
-# Install dependencies
-RUN apk update && apk add --no-cache bash curl perl cowsay
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    bash \
+    curl \
+    fortune-mod \
+    cowsay \
+    netcat \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy app files
+# Copy the Wisecow script into the container
 COPY wisecow.sh .
 
-# Make script executable
+# Make the script executable
 RUN chmod +x wisecow.sh
 
-# Expose port used by Wisecow app
+# Expose the port Wisecow uses
 EXPOSE 4499
 
-# Run the app
+# Run the Wisecow script when container starts
 CMD ["./wisecow.sh"]
